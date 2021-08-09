@@ -7,10 +7,11 @@
         <input
           type="checkbox"
           class="custom-control-input"
-          id="cb1"
-          :checked="true"
+          :id="'cb' + id"
+          :checked="state"
+          @change="stateChange"
         />
-        <label class="custom-control-label" for="cb1">
+        <label class="custom-control-label" :for="'cb' + id">
           <!-- 商品的缩略图 -->
           <img :src="pic" alt="" />
         </label>
@@ -22,16 +23,23 @@
       <h6 class="goods-title">{{ title }}</h6>
       <div class="goods-info-bottom">
         <!-- 商品价格 -->
-        <span class="goods-price">￥0</span>
+        <span class="goods-price">￥{{ price }}</span>
         <!-- 商品的数量 -->
+        <Counter :num="count" :id="id"></Counter>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Counter from "@/components/Counter/Counter";
 export default {
   props: {
+    //商品的Id
+    id: {
+      required: true,
+      type: Number,
+    },
     //要渲染的商品标题
     title: {
       default: "",
@@ -42,6 +50,30 @@ export default {
       default: "",
       type: String,
     },
+    //商品的单价
+    price: {
+      default: 0,
+      type: Number,
+    },
+    //勾选状态
+    state: {
+      default: true,
+      type: Boolean,
+    },
+    //商品的购买数量
+    count: {
+      type: Number,
+      default: 1,
+    },
+  },
+  methods: {
+    stateChange(e) {
+      const newState = e.target.checked;
+      this.$emit("state-change", { id: this.id, value: newState });
+    },
+  },
+  components: {
+    Counter,
   },
 };
 </script>
